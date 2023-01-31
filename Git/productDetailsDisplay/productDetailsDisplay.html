@@ -1,0 +1,110 @@
+<template>
+    
+    <div class="product-information">
+      
+        <div class="details-area">
+            <div class="heading">
+                <h2 class="slds-text-heading_medium">{name}</h2>
+                <div class="texts">SKU: {sku}</div>
+                
+                <div if:false={stock}  class="greenMssg">
+                    Available Quantity:{availableQty}
+                 </div>
+                <div if:true={stock}  class="redMssg">
+                   Available Quantity:{availableQty}
+                </div>
+    
+                <div class="slds-p-bottom_medium">
+                    <template for:each={_displayableFields} for:item="field">
+                        <div
+                            key={field.id}
+                            if:true={field.value}
+                            class="slds-grid slds-p-top_x-small"
+                        >
+                            <p class="slds-m-right_xx-small">{field.name}:</p>
+                            <lightning-formatted-rich-text
+                                value={field.value}
+                            ></lightning-formatted-rich-text>
+                        </div>
+                    </template>
+                </div>
+                <div if:true={inStock} class="texts">
+                    <lightning-icon
+                        icon-name="utility:check"
+                        variant="success"
+                    ></lightning-icon>
+                    <span class="slds-p-horizontal_small">In stock</span>
+                </div>
+                <div if:false={inStock} class="texts">
+                    <lightning-icon
+                        icon-name="utility:ban"
+                        variant="error"
+                    ></lightning-icon>
+                    <span class="slds-p-horizontal_small">Out of stock</span>
+                </div>
+            </div>
+            <div class="price">
+                <span if:false={hasPrice}>Price Unavailable</span>
+                Price : 
+                <lightning-formatted-number
+                    if:true={hasPrice}
+                    currency-code={price.currency}
+                    format-style="currency"
+                    value={price.negotiated}
+                >
+                </lightning-formatted-number>
+            </div>
+            <div class="texts">
+                <lightning-layout vertical-align="end">
+                    <lightning-layout-item size="2">
+                        <lightning-input
+                            type="number"
+                            name="quantity"
+                            label="QUANTITY"
+                            value="1"
+                            min="1"
+                            max="9999"
+                            step="1"
+                            message-when-step-mismatch="Enter a whole number."
+                            onchange={handleQuantityChange} 
+                        >
+                        </lightning-input>
+                    </lightning-layout-item>
+                    <div if:true={inStock}>
+                    <lightning-layout-item>
+                        <lightning-button
+                            label="Add to Cart"
+                            variant="brand"
+                            class="slds-m-left_x-small"
+                            disabled={_isAddToCartDisabled}
+                            onclick={notifyAddToCart}
+                        >
+                        </lightning-button>
+                    </lightning-layout-item>
+                </div>
+                <div if:false={inStock}>
+                    <lightning-layout-item>
+                        <lightning-button
+                            label="Notify when Available"
+                            variant="brand"
+                            class="slds-m-left_x-small"
+                            onclick={createCase}
+                        >
+                        </lightning-button>
+                    </lightning-layout-item>
+                </div>
+                    <lightning-layout-item>
+                        <lightning-button
+                            label="Add to List"
+                            variant="brand"
+                            class="slds-m-left_x-small"
+                            onclick={notifyCreateAndAddToList}
+                        >
+                        </lightning-button>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+           
+        </div> 
+    </div> 
+</template>
